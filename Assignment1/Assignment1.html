@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Assignment1</title>
+</head>
+
+<body>
+    <h4>NUMBER GUESSING GAME</h4>
+    <span id="message"></span>
+    <div id="inputNumber">
+        <input type="number" id="number" />
+        <button id="guessButton">Guess</button>
+    </div>
+    <span id="pastGuess"><br/>Past Guesses: </span>
+    <script>
+        let inputNumber = document.getElementById("inputNumber");
+        let button = document.getElementById("guessButton");
+        let rand = Math.floor(Math.random() * 11 + 1);
+        let pastGuesses = document.getElementById('pastGuess').innerHTML;
+        let count =0;
+        let maxGuess = 10;
+        console.log(rand);
+        button.addEventListener("click", function () {
+            let message = document.getElementById("message");
+            let num = document.getElementById("number").value;
+            pastGuesses += num+"; ";
+            document.getElementById('pastGuess').innerHTML = pastGuesses;
+            count++;
+            if (parseInt(rand, 10) == parseInt(num, 10)) {
+                message.innerHTML = "Yay YOU ARE THE LORD OF THE GUESSES";
+                message.style.background = '#A6EB99';
+                inputNumber.style.display = 'none';
+            }
+            else {
+                message.style.background = '#EA3323';
+                if (parseInt(num, 10) > parseInt(rand, 10)) {
+                    message.innerHTML = "Your guess was too high, guess lower. You have " + (maxGuess-count).toString()+" guesses left";
+                }
+                else {
+                    message.innerHTML = "Your guess was too low, guess higher. You have " + (maxGuess-count).toString()+" guesses left";
+                }
+                if(count==maxGuess)
+                {
+                    inputNumber.innerHTML = "YOU ARE LOST";
+                    inputNumber.style.color = 'red';
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
