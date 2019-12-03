@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width:device-width, initial-scale:1">
+    <title>Currency Converter</title>
+    <!-- <script type="text/javascript" src="Currency_Converter.js"></script> -->
+</head>
+
+<body>
+    <h1>Currency Converter</h1>
+    <div>
+        Select input currency<br>
+        <input type="radio" name="currency" value="23262" id="usd" checked>USD<br>
+        <input type="radio" name="currency" value="25327" id="eur">EUR<br>
+    </div>
+    <input type="text" id="amount">
+    <button id="btnConvert">Convert Currency</button>
+    <span id="result"></span>
+    <script>
+        function ConvertToVnd() {
+            let valueText = document.getElementById("amount").value;
+            let conversion;
+            let vndAmount;
+
+            if (CheckRadioChecked("usd"))
+                //conversion = document.getElementById("usd").value;
+                callApi('USD');
+            else
+                //conversion = document.getElementById("eur").value;
+                callApi('EUR');
+
+            vndAmount = conversion * valueText;
+            document.getElementById("result").innerHTML = valueText + " USD is " + vndAmount + " VNĐ";
+        }
+        function CheckRadioChecked(idRadio) {
+            return document.getElementById(idRadio).checked;
+        }
+        function callApi(currency) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'https://free.currencyconverterapi.com/api/v6/convert?q=' + currency + '_VND&compact=y');
+            console.log('https://free.currencyconverterapi.com/api/v6/convert?q=' + currency + '_VND&compact=y');
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    updateResults(JSON.parse(xhr.responseText));
+                }
+                else {
+                    alert('Request failed.  Returned status of ' + xhr.status);
+                }
+            };
+            xhr.send();
+        }
+
+        function updateResults(response) {
+            console.log(response);
+        }
+        let button = document.getElementById("btnConvert");
+        // button.onclick=ConvertToVnd;
+        button.addEventListener("click", ConvertToVnd);
+    </script>
+</body>
+
+</html>

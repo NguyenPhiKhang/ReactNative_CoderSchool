@@ -1,0 +1,22 @@
+{
+    "messages": [
+        {
+            "_id": 1,
+            "text": "AAAAAAA",
+            "user": {
+                "_id": 2,
+                "name": "React Native",
+                "avatar": "https://placeimg.com/140/140/any"
+            }
+        },
+        {
+            "_id": 2,
+            "text": "BBBBBBB",
+            "user": {
+                "_id": 2,
+                "name": "BBBBBBBBB",
+                "avatar": "https://placeimg.com/140/140/any"
+            }
+        }
+    ]
+}
