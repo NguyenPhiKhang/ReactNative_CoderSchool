@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "Lab5_weather",
-    "slug": "lab5",
+    "name": "react_native_weather",
+    "slug": "react_native_weather",
     "privacy": "public",
-    "sdkVersion": "35.0.0",
+    "sdkVersion": "34.0.0",
     "platforms": [
       "ios",
       "android",

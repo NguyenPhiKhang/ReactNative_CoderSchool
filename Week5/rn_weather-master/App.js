@@ -1,8 +1,19 @@
-import React from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
-import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
-import {getWeatherIcon} from '../utils/index';
+//hard code GPS
 
+import React, { Component } from "react";
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ImageBackground
+} from "react-native";
+import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { CITIES, getWeatherBackgroundImage, getWeatherIcon } from "./utils";
+
+import * as Location from "expo-location";
+import * as Permissions from "expo-permissions";
 
 const Loading = () => (
   <View style={styles.loading}>
@@ -77,7 +88,101 @@ const WeatherCard = ({ location, error, loading }) => {
   );
 };
 
-export default WeatherCard;
+const CitySelectionButtons = props => (
+  <View style={styles.cityContainer}>
+    <TouchableOpacity
+      key="currentLocation"
+      style={styles.currentLocation}
+      onPress={() => props.onChooseCity("")}
+    >
+      <Text style={styles.cityName}>Current Location</Text>
+    </TouchableOpacity>
+    {CITIES.map(city => {
+      return (
+        <TouchableOpacity
+          key={city.name}
+          style={styles.cityButton}
+          onPress={() => props.onChooseCity(city.name)}
+        >
+          <Text style={styles.cityName}>{city.name}</Text>
+        </TouchableOpacity>
+      );
+    })}
+  </View>
+);
+
+export default class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loading: true,
+      location: {
+        name: "",
+        main: { temp: "" },
+        wind: { speed: "" },
+        weather: [{ main: "", description: "" }]
+      }
+    };
+  }
+
+  getLocationAsync = async () => {
+    const { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== "granted") {
+      return;
+    }
+
+    const location = await Location.getCurrentPositionAsync();
+    this.getWeather(location.coords.latitude, location.coords.longitude);
+  };
+
+  getWeather = (latitude, longitude, imgUrl = "") => {
+    this.setState({ loading: true }, async () => {
+      const API_KEY = "3de6162d3745365b168ade2bbe4e1d66";
+      const api = `http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}`;
+      try {
+        const response = await fetch(api);
+        const jsonData = await response.json();
+        this.setState({ location: { ...jsonData, imgUrl }, loading: false });
+      } catch (error) {
+        this.setState({ error: true, loading: false });
+      }
+    });
+  };
+
+  async componentDidMount() {
+    await this.getLocationAsync();
+  }
+
+  onChooseCity = name => {
+    let randImg = "";
+    if (name !== "") {
+      const city = CITIES.find(city => city.name === name);
+      randImg = city.imgUrl[Math.floor(Math.random() * city.imgUrl.length)];
+      this.getWeather(city.latitude, city.longitude, randImg);
+    } else {
+      this.getLocationAsync();
+    }
+  };
+
+  render() {
+    const bgImage = {
+      uri:
+        this.state.location.imgUrl ||
+        getWeatherBackgroundImage(this.state.location.weather[0].main)
+    };
+
+    return (
+      <ImageBackground source={bgImage} style={styles.bg}>
+        <WeatherCard
+          error={this.state.error}
+          loading={this.state.loading}
+          location={this.state.location}
+        />
+        <CitySelectionButtons onChooseCity={this.onChooseCity} />
+      </ImageBackground>
+    );
+  }
+}
 
 const styles = StyleSheet.create({
   bg: {
@@ -87,7 +192,6 @@ const styles = StyleSheet.create({
     backgroundColor: "black"
   },
   container: {
-    flex: 1,
     alignItems: "center",
     justifyContent: "center"
   },
