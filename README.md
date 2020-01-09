@@ -1,5 +1,7 @@
-# Assignment_DevC
-10 week studing React Native in CoderSchool
+# REACT NATIVE IN CODERSCHOOL
+<pre>
+<b>10 week studing React Native in CoderSchool</b>
+</pre>
 
 ## Week 1 - Intro to HTML & JavaScript
 <table style="width:100%">
